@@ -1,5 +1,8 @@
 const { Schema, model } = require("mongoose");
+
 const { handleMongooseError } = require("../helpers");
+
+const subscriptionList = ["starter", "pro", "business"];
 
 const userSchema = new Schema(
   {
@@ -14,16 +17,12 @@ const userSchema = new Schema(
     },
     subscription: {
       type: String,
-      enum: ["starter", "pro", "business"],
+      enum: subscriptionList,
       default: "starter",
     },
     token: {
       type: String,
       default: null,
-    },
-    owner: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
     },
   },
   { versionKey: false, timestamps: true }
@@ -35,4 +34,5 @@ const User = model("user", userSchema);
 
 module.exports = {
   User,
+  subscriptionList,
 };

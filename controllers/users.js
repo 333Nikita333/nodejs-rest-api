@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const { ctrlWrapper, HttpError } = require("../helpers");
-const { User } = require("../models/userMongoose");
+const { User, subscriptionList } = require("../models/userMongoose");
 
 const { SECRET_KEY } = process.env;
 
@@ -66,9 +66,31 @@ const getCurrent = async (req, res) => {
 
 const logout = async (req, res) => {
   const { _id: userId } = req.user;
-  await User.findByIdAndUpdate(userId, { token: "" });
+  await User.findByIdAndUpdate(userId, { token: null });
 
   res.status(204);
+};
+
+const updateSubscription = async (req, res) => {
+  const errorSubscription = new HttpError(400, "Invalid subscription value");
+  const { subscription } = req.body;
+  const { _id: userId } = req.user;
+
+  if (!subscription || !subscriptionList.includes(subscription)) {
+    throw errorSubscription;
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { subscription },
+    { new: true }
+  );
+  res.json({
+    user: {
+      email: updatedUser.email,
+      subscription: updatedUser.subscription,
+    },
+  });
 };
 
 module.exports = {
@@ -76,4 +98,5 @@ module.exports = {
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
+  updateSubscription: ctrlWrapper(updateSubscription),
 };

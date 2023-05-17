@@ -9,6 +9,7 @@ const avatarsDir = path.join(__dirname, "../", "public", "avatars");
 
 const { ctrlWrapper, HttpError } = require("../helpers");
 const { User, subscriptionList } = require("../models/userMongoose");
+const avatarManipulator = require("../helpers/avatarManipulator");
 
 const register = async (req, res) => {
   const errorConflict = new HttpError(409, "Email in use");
@@ -105,12 +106,15 @@ const updateSubscription = async (req, res) => {
 const updateAvatar = async (req, res) => {
   const { _id: userId } = req.user;
   const { path: tmpUpload, originalname } = req.file;
-  
-  const newFilename = `${userId}_${originalname}`;
-  const resultUpload = path.join(avatarsDir, newFilename);
+
+  const resultUpload = path.join(avatarsDir, originalname);
   await fs.rename(tmpUpload, resultUpload);
 
-  const avatarURL = path.join("avatars", newFilename);
+  await avatarManipulator(resultUpload);
+
+  const newFileName = `${userId}_${originalname}`;
+  const avatarURL = path.join("avatars", newFileName);
+
   await User.findByIdAndUpdate(userId, { avatarURL });
 
   res.json({ avatarURL });

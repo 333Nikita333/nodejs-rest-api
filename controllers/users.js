@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const gravatar = require("gravatar");
 
 const { ctrlWrapper, HttpError } = require("../helpers");
 const { User, subscriptionList } = require("../models/userMongoose");
@@ -17,8 +18,13 @@ const register = async (req, res) => {
   }
 
   const hashPawword = await bcrypt.hash(password, 10);
+  const avatarURL = gravatar.url(email);
 
-  const newUser = await User.create({ ...req.body, password: hashPawword });
+  const newUser = await User.create({
+    ...req.body,
+    password: hashPawword,
+    avatarURL,
+  });
 
   res.status(201).json({
     user: {

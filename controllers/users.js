@@ -1,11 +1,14 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
+const path = require("path");
+const fs = require("fs/promises");
+
+const { SECRET_KEY } = process.env;
+const avatarsDir = path.join(__dirname, "../", "public", "avatars");
 
 const { ctrlWrapper, HttpError } = require("../helpers");
 const { User, subscriptionList } = require("../models/userMongoose");
-
-const { SECRET_KEY } = process.env;
 
 const register = async (req, res) => {
   const errorConflict = new HttpError(409, "Email in use");
@@ -99,10 +102,31 @@ const updateSubscription = async (req, res) => {
   });
 };
 
+const updateAvatar = async (req, res) => {
+  const { _id: userId } = req.user;
+  // получаем с объекта запроса временный путь к файлу и его имя
+  const { path: tmpUpload, originalname } = req.file;
+  // переименовываем имя аватарки, чтобы небыло конфликта
+  const newFilename = `${userId}_${originalname}`;
+  
+  // прописываем новый путь к файлу
+  const resultUpload = path.join(avatarsDir, newFilename);
+  // перемещаем его с временного пути в новый
+  await fs.rename(tmpUpload, resultUpload);
+
+  // прописываем путь к файлу
+  const avatarURL = path.join("avatars", newFilename);
+  // записываем новый путь файла для аватарки в базе пользователя
+  await User.findByIdAndUpdate(userId, { avatarURL });
+
+  res.json({ avatarURL });
+};
+
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
   updateSubscription: ctrlWrapper(updateSubscription),
+  updateAvatar: ctrlWrapper(updateAvatar),
 };

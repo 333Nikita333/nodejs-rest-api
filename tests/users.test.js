@@ -6,7 +6,7 @@ const { DB_HOST } = process.env;
 
 describe("Register Controller", () => {
   beforeAll(async () => {
-    // Подключение к базе данных перед запуском тестов
+    // Connect to MongoDB database before running tests
     await mongoose.connect(DB_HOST, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -14,9 +14,9 @@ describe("Register Controller", () => {
   });
 
   afterAll(async () => {
-    // Очистка коллекции пользователей после выполнения тестов
+    // Clearing the user collection after running tests
     await User.deleteMany();
-    // Отключение от базы данных после выполнения тестов
+    // Disconnecting from the database after running tests
     await mongoose.connection.close();
   });
 

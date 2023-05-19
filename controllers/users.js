@@ -1,10 +1,15 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const gravatar = require("gravatar");
+const path = require("path");
+const fs = require("fs/promises");
+
+const { SECRET_KEY } = process.env;
+const avatarsDir = path.join(__dirname, "../", "public", "avatars");
 
 const { ctrlWrapper, HttpError } = require("../helpers");
 const { User, subscriptionList } = require("../models/userMongoose");
-
-const { SECRET_KEY } = process.env;
+const avatarManipulator = require("../helpers/avatarManipulator");
 
 const register = async (req, res) => {
   const errorConflict = new HttpError(409, "Email in use");
@@ -17,8 +22,13 @@ const register = async (req, res) => {
   }
 
   const hashPawword = await bcrypt.hash(password, 10);
+  const avatarURL = gravatar.url(email);
 
-  const newUser = await User.create({ ...req.body, password: hashPawword });
+  const newUser = await User.create({
+    ...req.body,
+    password: hashPawword,
+    avatarURL,
+  });
 
   res.status(201).json({
     user: {
@@ -93,10 +103,28 @@ const updateSubscription = async (req, res) => {
   });
 };
 
+const updateAvatar = async (req, res) => {
+  const { _id: userId } = req.user;
+  const { path: tmpUpload, originalname } = req.file;
+
+  const resultUpload = path.join(avatarsDir, originalname);
+  await fs.rename(tmpUpload, resultUpload);
+
+  await avatarManipulator(resultUpload);
+
+  const newFileName = `${userId}_${originalname}`;
+  const avatarURL = path.join("avatars", newFileName);
+
+  await User.findByIdAndUpdate(userId, { avatarURL });
+
+  res.json({ avatarURL });
+};
+
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
   updateSubscription: ctrlWrapper(updateSubscription),
+  updateAvatar: ctrlWrapper(updateAvatar),
 };

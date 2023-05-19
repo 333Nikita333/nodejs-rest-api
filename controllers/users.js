@@ -4,12 +4,11 @@ const gravatar = require("gravatar");
 const path = require("path");
 const fs = require("fs/promises");
 
+const { ctrlWrapper, HttpError, avatarManipulator } = require("../helpers");
+const { User, subscriptionList } = require("../models/userMongoose");
+
 const { SECRET_KEY } = process.env;
 const avatarsDir = path.join(__dirname, "../", "public", "avatars");
-
-const { ctrlWrapper, HttpError } = require("../helpers");
-const { User, subscriptionList } = require("../models/userMongoose");
-const avatarManipulator = require("../helpers/avatarManipulator");
 
 const register = async (req, res) => {
   const errorConflict = new HttpError(409, "Email in use");

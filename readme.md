@@ -2,7 +2,7 @@
 
 ## Project Description
 Personal phone book backend based on MongoDB database that allows users to add, edit, delete and view their contacts. The application implements user registration and authentication. Authorized users can add, edit, delete and view their contacts.
-<br>**Base URL - https://contacts-backend-zf1w.onrender.com**
+<br>**Base URL - [https://contacts-backend-zf1w.onrender.com](https://contacts-api-n3q6.onrender.com)**
 ## API Endpoints
 ### Routing for working with users
 <br>**@ POST /api/users/register**

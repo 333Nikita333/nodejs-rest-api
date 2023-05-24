@@ -18,6 +18,13 @@ const registerSchema = Joi.object({
     }),
 });
 
+const verifyEmailSchema = Joi.object({
+  email: Joi.string().required().messages({
+    "string.empty": `"email" cannot be an empty field`,
+    "any.required": `"email" is a required field`,
+  }),
+})
+
 const loginSchema = Joi.object({
   password: Joi.string().min(6).required().messages({
     "string.empty": `"password" cannot be an empty field`,
@@ -32,6 +39,7 @@ const loginSchema = Joi.object({
 
 const schemas = {
   registerSchema,
+  verifyEmailSchema,
   loginSchema,
 };
 

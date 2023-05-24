@@ -1,6 +1,6 @@
 # REST API for Phonebook
 
-## Project Description:
+## Project Description
 Personal phone book backend based on MongoDB database that allows users to add, edit, delete and view their contacts. The application implements user registration and authentication. Authorized users can add, edit, delete and view their contacts.
 
 ## API Endpoints
@@ -35,14 +35,14 @@ Personal phone book backend based on MongoDB database that allows users to add, 
 <br>**@ PATCH /api/contacts/:contactId/favorite**
 <br>Changing the favorite field for one contact by its id. Requires authorization using a JWT token in the Authorization header.
 
-## Commands:
+## Commands
 - `npm start` or `yarn start` &mdash; server start in production mode
 - `npm run start:dev` or `yarn start:dev` &mdash; start the server in development mode
 - `npm run lint` or `yarn lint` &mdash; run a code check with eslint, must run before each PR and fix all linter errors
 - `npm lint:fix` or `yarn lint:fix` &mdash; the same linter check, but with automatic fixes for simple errors
 - `npm run test` or `yarn test` &mdash; running Jest tests for registration and login
 
-## Used Libraries:
+## Used Libraries
     "bcrypt": "^5.1.0",
     "cors": "2.8.5",
     "cross-env": "7.0.3",

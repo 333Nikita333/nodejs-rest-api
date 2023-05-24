@@ -1,31 +1,62 @@
-## GoIT Node.js Course Template Homework
+# REST API for Phonebook
 
-Виконайте форк цього репозиторію для виконання домашніх завдань (2-6)
-Форк створить репозиторій на вашому http://github.com
+## Project Description:
+Personal phone book backend based on MongoDB database that allows users to add, edit, delete and view their contacts. The application implements user registration and authentication. Authorized users can add, edit, delete and view their contacts.
 
-Додайте ментора до колаборації
+## API Endpoints
+### Routing for working with users
+**@ POST /api/users/register**<br>
+User registration. Accepts an object with email, passwords and subscription fields. Returns a user object with email and subscription, or an error if such an email is already registered.
+**@ GET /api/users/verify/:verificationToken**<br>
+User verification by the verificationToken parameter. Accepts a verificationToken as a search parameter. Confirms the registration and returns a successful verification message or an error if the user is not found or the verificationToken is invalid.
+**@ POST /api/users/verify**<br>
+Resending an email to a user with a verification link. Accepts an object with email. Returns a success message or an error if the user is not found or verification has already passed.
+**@ POST /api/users/login**<br>
+User authorization. Accepts an object with email and password fields. Returns a user object with email and subscription, as well as a JWT token that is needed to authenticate on other endpoints.
+**@ POST /api/users/logout**<br>
+Exit the current user from the profile. Removes the token from the user or returns an error if the user does not exist.
+**@ GET /api/users/current**<br>
+Getting user data by his token. Returns a user object with email and subscription, or an error if there is no such email in the database.
+**@ PATCH /api/users**<br>
+Changing a user's subscription. Accepts an object with a subscription field of 'starter', 'pro', or 'business'. Requires authorization using a JWT token in the Authorization header.
+**@ PATCH /api/users/avatars**<br>
+User avatar update. Accepts an object with a avatar file. Requires authorization using a JWT token in the Authorization header.
+### Routing for working with a collection of contacts
+**@ GET /api/contacts**<br>
+Get all contacts for a specific user. Requires authorization using a JWT token in the Authorization header.
+**@ GET /api/contacts/:contactId**<br>
+Getting one contact by its id. Requires authorization using a JWT token in the Authorization header.
+**@ POST /api/contacts**<br>
+Adding a new contact. Accepts an object with fields name, email, phone, favorite (true/false). Requires authorization using a JWT token in the Authorization header.
+**@ PUT /api/contacts/:contactId**<br>
+Changing a contact. Accepts an object with fields name, email, phone, favorite (true/false). Requires authorization using a JWT token in the Authorization header.
+**@ DELETE /api/contacts/:contactId**<br>
+Deleting a contact. Requires authorization using a JWT token in the Authorization header.
+**@ PATCH /api/contacts/:contactId/favorite**<br>
+Changing the favorite field for one contact by its id. Requires authorization using a JWT token in the Authorization header.
 
-Для кожної домашньої роботи створюйте свою гілку.
+## Commands:
+- `npm start` or `yarn start` &mdash; server start in production mode
+- `npm run start:dev` or `yarn start:dev` &mdash; start the server in development mode
+- `npm run lint` or `yarn lint` &mdash; run a code check with eslint, must run before each PR and fix all linter errors
+- `npm lint:fix` or `yarn lint:fix` &mdash; the same linter check, but with automatic fixes for simple errors
+- `npm run test` or `yarn test` &mdash; running Jest tests for registration and login
 
-- hw02
-- hw03
-- hw04
-- hw05
-- hw06
-
-Кожна нова гілка для др повинна робитися з master
-
-Після того, як ви закінчили виконувати домашнє завдання у своїй гілці, необхідно зробити пулл-реквест (PR). Потім додати ментора для рев'ю коду. Тільки після того, як ментор заапрувить PR, ви можете виконати мердж гілки з домашнім завданням у майстер.
-
-Уважно читайте коментарі ментора. Виправте зауваження та зробіть коміт у гілці з домашнім завданням. Зміни підтягнуться у PR автоматично після того, як ви відправите коміт з виправленнями на github
-Після виправлення знову додайте ментора на рев'ю коду.
-
-- При здачі домашньої роботи є посилання на PR
-- JS-код чистий та зрозумілий, для форматування використовується Prettier
-
-### Команди:
-
-- `npm start` &mdash; старт сервера в режимі production
-- `npm run start:dev` &mdash; старт сервера в режимі розробки (development)
-- `npm run lint` &mdash; запустити виконання перевірки коду з eslint, необхідно виконувати перед кожним PR та виправляти всі помилки лінтера
-- `npm lint:fix` &mdash; та ж перевірка лінтера, але з автоматичними виправленнями простих помилок
+## Used Libraries:
+    "bcrypt": "^5.1.0",
+    "cors": "2.8.5",
+    "cross-env": "7.0.3",
+    "dotenv": "^16.0.3",
+    "express": "4.17.1",
+    "joi": "^17.9.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.1.0",
+    "morgan": "1.10.0",
+    "nanoid": "3.3.4"
+    "gravatar": "^1.8.2",
+    "jimp": "^0.22.8",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.2",
+    "jest": "^29.5.0",
+    "nodemon": "2.0.15",
+    "supertest": "^6.3.3"

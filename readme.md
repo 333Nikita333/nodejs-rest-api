@@ -5,35 +5,35 @@ Personal phone book backend based on MongoDB database that allows users to add, 
 
 ## API Endpoints
 ### Routing for working with users
-**@ POST /api/users/register**<br>
-User registration. Accepts an object with email, passwords and subscription fields. Returns a user object with email and subscription, or an error if such an email is already registered.
-**@ GET /api/users/verify/:verificationToken**<br>
-User verification by the verificationToken parameter. Accepts a verificationToken as a search parameter. Confirms the registration and returns a successful verification message or an error if the user is not found or the verificationToken is invalid.
-**@ POST /api/users/verify**<br>
-Resending an email to a user with a verification link. Accepts an object with email. Returns a success message or an error if the user is not found or verification has already passed.
-**@ POST /api/users/login**<br>
-User authorization. Accepts an object with email and password fields. Returns a user object with email and subscription, as well as a JWT token that is needed to authenticate on other endpoints.
-**@ POST /api/users/logout**<br>
-Exit the current user from the profile. Removes the token from the user or returns an error if the user does not exist.
-**@ GET /api/users/current**<br>
-Getting user data by his token. Returns a user object with email and subscription, or an error if there is no such email in the database.
-**@ PATCH /api/users**<br>
-Changing a user's subscription. Accepts an object with a subscription field of 'starter', 'pro', or 'business'. Requires authorization using a JWT token in the Authorization header.
-**@ PATCH /api/users/avatars**<br>
-User avatar update. Accepts an object with a avatar file. Requires authorization using a JWT token in the Authorization header.
+<br>**@ POST /api/users/register**
+<br>User registration. Accepts an object with email, passwords and subscription fields. Returns a user object with email and subscription, or an error if such an email is already registered.
+<br>**@ GET /api/users/verify/:verificationToken**
+<br>User verification by the verificationToken parameter. Accepts a verificationToken as a search parameter. Confirms the registration and returns a successful verification message or an error if the user is not found or the verificationToken is invalid.
+<br>**@ POST /api/users/verify**
+<br>Resending an email to a user with a verification link. Accepts an object with email. Returns a success message or an error if the user is not found or verification has already passed.
+<br>**@ POST /api/users/login**
+<br>User authorization. Accepts an object with email and password fields. Returns a user object with email and subscription, as well as a JWT token that is needed to authenticate on other endpoints.
+<br>**@ POST /api/users/logout**
+<br>Exit the current user from the profile. Removes the token from the user or returns an error if the user does not exist.
+<br>**@ GET /api/users/current**
+<br>Getting user data by his token. Returns a user object with email and subscription, or an error if there is no such email in the database.
+<br>**@ PATCH /api/users**
+<br>Changing a user's subscription. Accepts an object with a subscription field of 'starter', 'pro', or 'business'. Requires authorization using a JWT token in the Authorization header.
+<br>**@ PATCH /api/users/avatars**
+<br>User avatar update. Accepts an object with a avatar file. Requires authorization using a JWT token in the Authorization header.
 ### Routing for working with a collection of contacts
-**@ GET /api/contacts**<br>
-Get all contacts for a specific user. Requires authorization using a JWT token in the Authorization header.
-**@ GET /api/contacts/:contactId**<br>
-Getting one contact by its id. Requires authorization using a JWT token in the Authorization header.
-**@ POST /api/contacts**<br>
-Adding a new contact. Accepts an object with fields name, email, phone, favorite (true/false). Requires authorization using a JWT token in the Authorization header.
-**@ PUT /api/contacts/:contactId**<br>
-Changing a contact. Accepts an object with fields name, email, phone, favorite (true/false). Requires authorization using a JWT token in the Authorization header.
-**@ DELETE /api/contacts/:contactId**<br>
-Deleting a contact. Requires authorization using a JWT token in the Authorization header.
-**@ PATCH /api/contacts/:contactId/favorite**<br>
-Changing the favorite field for one contact by its id. Requires authorization using a JWT token in the Authorization header.
+<br>**@ GET /api/contacts**
+<br>Get all contacts for a specific user. Requires authorization using a JWT token in the Authorization header.
+<br>**@ GET /api/contacts/:contactId**
+<br>Getting one contact by its id. Requires authorization using a JWT token in the Authorization header.
+<br>**@ POST /api/contacts**
+<br>Adding a new contact. Accepts an object with fields name, email, phone, favorite (true/false). Requires authorization using a JWT token in the Authorization header.
+<br>**@ PUT /api/contacts/:contactId**
+<br>Changing a contact. Accepts an object with fields name, email, phone, favorite (true/false). Requires authorization using a JWT token in the Authorization header.
+<br>**@ DELETE /api/contacts/:contactId**
+<br>Deleting a contact. Requires authorization using a JWT token in the Authorization header.
+<br>**@ PATCH /api/contacts/:contactId/favorite**
+<br>Changing the favorite field for one contact by its id. Requires authorization using a JWT token in the Authorization header.
 
 ## Commands:
 - `npm start` or `yarn start` &mdash; server start in production mode

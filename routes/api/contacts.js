@@ -6,9 +6,11 @@ const { schemas } = require("../../models/contactJoi");
 
 const router = express.Router();
 
-router.get("/", authenticate, ctrl.getContacts);
+router.use(authenticate);
 
-router.get("/:contactId", authenticate, isValidId, ctrl.getContactById);
+router.get("/", ctrl.getContacts);
+
+router.get("/:contactId", isValidId, ctrl.getContactById);
 
 router.post(
   "/",
@@ -17,11 +19,10 @@ router.post(
   ctrl.addContact
 );
 
-router.delete("/:contactId", authenticate, isValidId, ctrl.removeContact);
+router.delete("/:contactId", isValidId, ctrl.removeContact);
 
 router.put(
   "/:contactId",
-  authenticate,
   isValidId,
   validateBody(schemas.userSchema),
   ctrl.updateContact
@@ -29,7 +30,6 @@ router.put(
 
 router.patch(
   "/:contactId/favorite",
-  authenticate,
   isValidId,
   validateBody(schemas.updateFavoriteSchema),
   ctrl.updateStatusContact

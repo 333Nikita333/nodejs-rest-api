@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 const request = require("supertest");
 const app = require("../app");
 const { User } = require("../models/userMongoose");
-const { DB_HOST } = process.env;
+const { DB_TEST_JEST } = process.env;
 
 describe("Login Controller", () => {
   beforeAll(async () => {
     // Connect to MongoDB database before running tests
-    await mongoose.connect(DB_HOST, {
+    await mongoose.connect(DB_TEST_JEST, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

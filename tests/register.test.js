@@ -2,25 +2,22 @@ const mongoose = require("mongoose");
 const request = require("supertest");
 const app = require("../app");
 const { User } = require("../models/userMongoose");
-const { DB_HOST } = process.env;
+const { DB_TEST_JEST } = process.env;
 
 describe("Register Controller", () => {
   beforeAll(async () => {
     // Connect to MongoDB database before running tests
-    await mongoose.connect(DB_HOST, {
+    await mongoose.connect(DB_TEST_JEST, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
   });
 
   afterAll(async () => {
-    // Disconnecting from the database after running tests
-    await mongoose.connection.close();
-  });
-
-  beforeEach(async () => {
     // Clearing the user collection after running tests
     await User.deleteMany();
+    // Disconnecting from the database after running tests
+    await mongoose.connection.close();
   });
 
   // Test for checking status code 201 during registration
@@ -38,7 +35,7 @@ describe("Register Controller", () => {
   // subscription fields and data type "String" during registration
   test("register should return user object with email and subscription", async () => {
     const response = await request(app).post("/api/users/register").send({
-      email: "test@example.com",
+      email: "test1@example.com",
       password: "password",
       subscription: "starter",
     });

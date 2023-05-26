@@ -35,6 +35,7 @@ const register = async (req, res) => {
     password: hashPawword,
     avatarURL,
     verificationToken,
+    // verify: true - for tests
   });
 
   const verifyEmail = {

@@ -1,0 +1,790 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "version": "1.0.0",
+    "title": "Phonebook Documentation",
+    "description": "API for the contact book application with registration, login and contact management. The application implements the ability to verify the user's email after registration. Each registered user is automatically assigned a temporary avatar, which can later be replaced with your own. Users can choose one of three subscriptions: 'starter', 'pro' or 'business'. to confirm the mail.If the letter was not received, it is possible to resend it. \n\n<strong>Main functionality includes:</strong> \n\n- user registration with email verification,\n\n- user login and authentication,\n\n- user profile management,\n\n- creating, editing and deleting contacts,\n\n- viewing and filtering contacts,\n\n- setting and updating contact favorite status,\n\n- updating user subscription,\n\n- uploading and updating user avatar.\n\n<strong>Main technology stack:</strong>\n\nNode.js - a JavaScript runtime that allows you to run JavaScript code on the server.\n\n Express.js - minimalistic and flexible framework for developing web applications on Node.js.\n\n MongoDB - flexible and scalable NoSQL database.\n\n Mongoose - an object document model (ODM) for Node.js that provides an easy way to interact with the MongoDB database.",
+    "contact": {
+      "name": "Mykyta Hilis",
+      "email": "mykytahilis@gmail.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    { "url": "http://localhost:4000", "description": "Development server" },
+    {
+      "url": "https://contacts-api-n3q6.onrender.com",
+      "description": "Production server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Users",
+      "description": "Operations related to users"
+    },
+    {
+      "name": "Contacts",
+      "description": "Operations related to contacts"
+    }
+  ],
+  "paths": {
+    "/api/users/register": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Register a new user",
+        "description": "Registers a new user with the provided data. After successful registration, a verification email is sent to the user's email address.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful registration. Returns data from email and subscription.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or invalid request."
+          },
+          "409": {
+            "description": "Email already in use."
+          }
+        }
+      }
+    },
+    "/api/users/verify/{verificationToken}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Verify user's email",
+        "description": "Verifies the user's email using the provided verification token.",
+        "parameters": [
+          {
+            "name": "verificationToken",
+            "in": "path",
+            "description": "Verification token received during registration.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Verification successful."
+          },
+          "404": {
+            "description": "User not found."
+          }
+        }
+      }
+    },
+    "/api/users/verify": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Resend verification email",
+        "description": "Resends the verification email with a verification link if the previous email was not received.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendVerificationEmail"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Verification email sent."
+          },
+          "400": {
+            "description": "Email not found."
+          },
+          "401": {
+            "description": "Verification has already been passed."
+          }
+        }
+      }
+    },
+    "/api/users/login": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "User login",
+        "description": "Authenticates the user using the provided credentials. Returns a JWT token for user authentication.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful login. Returns a JWT token for authentication and user information.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials or unverified email."
+          },
+          "404": {
+            "description": "User with the provided email not found."
+          }
+        }
+      }
+    },
+    "/api/users/current": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get current user",
+        "description": "Returns information about the currently authenticated user.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request. Returns information about the current user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not authorized."
+          }
+        }
+      }
+    },
+    "/api/users/logout": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "User logout",
+        "description": "Logs out the user. Deletes the current JWT token.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Logout successful."
+          }
+        }
+      }
+    },
+    "/api/users": {
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Update user subscription",
+        "description": "Updates the subscription of the current user based on the provided data.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSubscription"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful subscription update. Returns updated user information.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or invalid request."
+          }
+        }
+      }
+    },
+    "/api/users/avatars": {
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Update user avatar",
+        "description": "Updates the avatar of the current user using the uploaded file.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful avatar update. Returns the URL of the updated avatar."
+          },
+          "400": {
+            "description": "Avatar upload error."
+          }
+        }
+      }
+    },
+    "/api/contacts": {
+      "get": {
+        "tags": ["Contacts"],
+        "summary": "Get contacts",
+        "description": "Returns a list of contacts for the current user.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of contacts per page.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "favorite",
+            "in": "query",
+            "description": "Filter contacts by favorite status (true or false).",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request. Returns a list of contacts.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ContactInfo"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not authorized."
+          }
+        }
+      },
+      "post": {
+        "tags": ["Contacts"],
+        "summary": "Add new contact",
+        "description": "Adds a new contact for the current user with the provided data.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful contact addition. Returns the created contact information.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or invalid request."
+          }
+        }
+      }
+    },
+    "/api/contacts/{contactId}": {
+      "get": {
+        "tags": ["Contacts"],
+        "summary": "Get contact by ID",
+        "description": "Returns the contact information for the provided contact ID.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "path",
+            "description": "ID of the contact to retrieve.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request. Returns contact information.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not authorized."
+          },
+          "404": {
+            "description": "Contact not found."
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Contacts"],
+        "summary": "Delete contact",
+        "description": "Deletes the contact with the provided contact ID.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "path",
+            "description": "ID of the contact to delete.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted successfully."
+          },
+          "401": {
+            "description": "User not authorized."
+          },
+          "404": {
+            "description": "Contact not found."
+          }
+        }
+      },
+      "put": {
+        "tags": ["Contacts"],
+        "summary": "Update contact",
+        "description": "Updates the contact with the provided contact ID using the provided data.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "path",
+            "description": "ID of the contact to update.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful contact update. Returns updated contact information.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or invalid request."
+          },
+          "404": {
+            "description": "Contact not found."
+          }
+        }
+      }
+    },
+    "/api/contacts/{contactId}/favorite": {
+      "patch": {
+        "tags": ["Contacts"],
+        "summary": "Update contact favorite status",
+        "description": "Updates the favorite status of the contact with the provided contact ID.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "path",
+            "description": "ID of the contact to update favorite status.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFavoriteStatus"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful update of favorite status. Returns updated contact information.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or invalid request."
+          },
+          "404": {
+            "description": "Contact not found."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RegisterUserRequest": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "minLength": 6,
+            "example": "123456"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "pattern": "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$",
+            "example": "john@example.com"
+          },
+          "subscription": {
+            "type": "string",
+            "description": "User's subscription",
+            "enum": ["starter", "pro", "business"],
+            "default": "starter"
+          }
+        },
+        "required": ["password", "email"]
+      },
+      "RegisterUserResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email",
+                "pattern": "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$",
+                "example": "john@example.com"
+              },
+              "subscription": {
+                "type": "string",
+                "description": "User's subscription",
+                "enum": ["starter", "pro", "business"],
+                "default": "starter"
+              }
+            }
+          }
+        }
+      },
+      "ResendVerificationEmail": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "pattern": "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$",
+            "example": "john@example.com"
+          }
+        },
+        "required": ["email"]
+      },
+      "LoginUserRequest": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "minLength": 6,
+            "example": "123456"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "pattern": "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$",
+            "example": "john@example.com"
+          }
+        },
+        "required": ["password", "email"]
+      },
+      "LoginUserResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email",
+                "pattern": "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$",
+                "example": "john@example.com"
+              },
+              "subscription": {
+                "type": "string",
+                "description": "User's subscription",
+                "enum": ["starter", "pro", "business"],
+                "default": "starter"
+              }
+            }
+          }
+        },
+        "required": ["password", "email"]
+      },
+      "UserInfo": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "pattern": "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$",
+            "example": "john@example.com"
+          },
+          "subscription": {
+            "type": "string",
+            "description": "User's subscription",
+            "enum": ["starter", "pro", "business"],
+            "default": "starter"
+          }
+        },
+        "required": ["email", "subscription"]
+      },
+      "UpdateSubscriptionRequest": {
+        "type": "object",
+        "properties": {
+          "subscription": {
+            "type": "string",
+            "enum": ["starter", "pro", "business"]
+          }
+        },
+        "required": ["subscription"]
+      },
+      "UpdateSubscriptionResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email",
+                "pattern": "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$",
+                "example": "john@example.com"
+              },
+              "subscription": {
+                "type": "string",
+                "description": "User's subscription",
+                "enum": ["starter", "pro", "business"],
+                "default": "starter"
+              }
+            }
+          }
+        }
+      },
+      "ContactData": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Contact name",
+            "example": "John Johnson"
+          },
+          "email": {
+            "type": "string",
+            "description": "Contact email",
+            "format": "email",
+            "pattern": "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$",
+            "example": "john@example.com"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact phone number",
+            "pattern": "^\\+\\d{12}$",
+            "example": "+380123456789"
+          },
+          "favorite": {
+            "type": "boolean",
+            "description": "Contact favorite",
+            "default": false
+          }
+        },
+        "required": ["name"]
+      },
+      "ContactInfo": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Contact id",
+            "example": "31d9792ab5a6b4a1a06dd56b"
+          },
+          "name": {
+            "type": "string",
+            "description": "Contact name",
+            "example": "John Johnson"
+          },
+          "email": {
+            "type": "string",
+            "description": "Contact email",
+            "format": "email",
+            "pattern": "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$",
+            "example": "john@example.com"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact phone number",
+            "pattern": "^\\+\\d{12}$",
+            "example": "+380123456789"
+          },
+          "favorite": {
+            "type": "boolean",
+            "description": "Contact favorite",
+            "default": false
+          }
+        },
+        "required": ["_id", "name"]
+      },
+      "UpdateFavoriteStatus": {
+        "type": "object",
+        "properties": {
+          "favorite": {
+            "type": "boolean",
+            "description": "Contact favorite",
+            "default": false
+          }
+        },
+        "required": ["favorite"]
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

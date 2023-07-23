@@ -17,13 +17,17 @@ const { SECRET_KEY, BASE_URL } = process.env;
 const avatarsDir = path.join(__dirname, "../", "public", "avatars");
 
 const register = async (req, res) => {
-  const errorConflict = new HttpError(409, "Email in use");
+  const errorConflict = new HttpError(409, "Email already in use");
 
   const { email, password } = req.body;
   const user = await User.findOne({ email });
 
   if (user) {
     throw errorConflict;
+  }
+
+  if (user && !user.verify) {
+    throw new HttpError(401, "This email exists, but it is not verified");
   }
 
   const hashPawword = await bcrypt.hash(password, 10);
@@ -60,6 +64,10 @@ const verifyEmail = async (req, res) => {
 
   if (!user) {
     throw new HttpError(404, "User not found");
+  }
+
+  if (user.verify) {
+    throw new HttpError(400, "Verification has already been passed");
   }
 
   await User.findByIdAndUpdate(user._id, {
@@ -108,6 +116,7 @@ const login = async (req, res) => {
   }
 
   const passwordCompare = await bcrypt.compare(password, user.password);
+  
   if (!passwordCompare) {
     throw errorAuth;
   }
@@ -115,6 +124,7 @@ const login = async (req, res) => {
   const payload = {
     id: user._id,
   };
+  
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
   await User.findByIdAndUpdate(user._id, { token });
 

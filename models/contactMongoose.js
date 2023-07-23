@@ -1,6 +1,8 @@
 const { Schema, model } = require("mongoose");
 
 const { handleMongooseError } = require("../helpers");
+const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+const phoneRegexp = /^\+\d{12}$/;
 
 const contactSchema = new Schema(
   {
@@ -10,9 +12,11 @@ const contactSchema = new Schema(
     },
     email: {
       type: String,
+      match: emailRegexp,
     },
     phone: {
       type: String,
+      match: phoneRegexp,
     },
     favorite: {
       type: Boolean,

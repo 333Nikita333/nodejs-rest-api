@@ -10,14 +10,14 @@ router.use(authenticate);
 
 router.get("/", ctrl.getContacts);
 
-router.get("/:contactId", isValidId, ctrl.getContactById);
-
 router.post(
   "/",
   authenticate,
   validateBody(schemas.userSchema),
   ctrl.addContact
 );
+
+router.get("/:contactId", isValidId, ctrl.getContactById);
 
 router.delete("/:contactId", isValidId, ctrl.removeContact);
 

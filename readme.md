@@ -59,4 +59,5 @@ Personal phone book backend based on MongoDB database that allows users to add, 
     "nodemailer": "^6.9.2",
     "jest": "^29.5.0",
     "nodemon": "2.0.15",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "swagger-ui-express": "^5.0.0"

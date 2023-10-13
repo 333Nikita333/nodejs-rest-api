@@ -44,6 +44,7 @@ Personal phone book backend based on MongoDB database that allows users to add, 
 
 ## Used Libraries
     "bcrypt": "^5.1.0",
+    "cloudinary": "^1.41.0",
     "cors": "2.8.5",
     "cross-env": "7.0.3",
     "dotenv": "^16.0.3",

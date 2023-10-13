@@ -9,7 +9,7 @@ const registerSchema = Joi.object({
     "any.required": `"password" is a required field`,
   }),
   email: Joi.string().pattern(emailRegexp).required().messages({
-    'string.pattern.base': `"Email" is invalid`,
+    "string.pattern.base": `"Email" is invalid`,
     "string.empty": `"email" cannot be an empty field`,
     "any.required": `"email" is a required field`,
   }),
@@ -22,11 +22,11 @@ const registerSchema = Joi.object({
 
 const verifyEmailSchema = Joi.object({
   email: Joi.string().pattern(emailRegexp).required().messages({
-    'string.pattern.base': `"Email" is invalid`,
+    "string.pattern.base": `"Email" is invalid`,
     "string.empty": `"email" cannot be an empty field`,
     "any.required": `"email" is a required field`,
   }),
-})
+});
 
 const loginSchema = Joi.object({
   password: Joi.string().min(6).required().messages({
@@ -35,7 +35,7 @@ const loginSchema = Joi.object({
     "any.required": `"password" is a required field`,
   }),
   email: Joi.string().pattern(emailRegexp).required().messages({
-    'string.pattern.base': `"Email" is invalid`,
+    "string.pattern.base": `"Email" is invalid`,
     "string.empty": `"email" cannot be an empty field`,
     "any.required": `"email" is a required field`,
   }),

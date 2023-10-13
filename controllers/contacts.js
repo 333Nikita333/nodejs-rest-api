@@ -12,7 +12,7 @@ const getContacts = async (req, res) => {
   if (favorite) {
     query.favorite = favorite;
   }
-  
+
   const result = await Contact.find(query, "-createdAt -updatedAt", {
     skip,
     limit,

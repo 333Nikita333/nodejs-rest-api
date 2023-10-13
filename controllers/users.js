@@ -10,11 +10,11 @@ const {
   HttpError,
   avatarManipulator,
   sendEmail,
+  cloudinary,
 } = require("../helpers");
 const { User, subscriptionList } = require("../models/userMongoose");
 
 const { SECRET_KEY, BASE_URL } = process.env;
-const avatarsDir = path.join(__dirname, "../", "public", "avatars");
 
 const register = async (req, res) => {
   const errorConflict = new HttpError(409, "Email already in use");
@@ -116,7 +116,7 @@ const login = async (req, res) => {
   }
 
   const passwordCompare = await bcrypt.compare(password, user.password);
-  
+
   if (!passwordCompare) {
     throw errorAuth;
   }
@@ -124,7 +124,7 @@ const login = async (req, res) => {
   const payload = {
     id: user._id,
   };
-  
+
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
   await User.findByIdAndUpdate(user._id, { token });
 
@@ -174,19 +174,29 @@ const updateSubscription = async (req, res) => {
 
 const updateAvatar = async (req, res) => {
   const { _id: userId } = req.user;
-  const { path: tmpUpload, originalname } = req.file;
+  const { path: oldPath, originalname } = req.file;
 
-  const resultUpload = path.join(avatarsDir, originalname);
-  await fs.rename(tmpUpload, resultUpload);
+  //* Saving to a local folder
+  // const avatarsDir = path.join(__dirname, "../", "public", "avatars");
+  // const newPath = path.join(avatarsDir, originalname);
+  // await fs.rename(oldPath, newPath);
+  // await avatarManipulator(newPath);
+  // const newFileName = `${userId}_${originalname}`;
+  // const avatarURL = path.join("avatars", newFileName);
 
-  await avatarManipulator(resultUpload);
-
-  const newFileName = `${userId}_${originalname}`;
-  const avatarURL = path.join("avatars", newFileName);
-
-  await User.findByIdAndUpdate(userId, { avatarURL });
-
-  res.json({ avatarURL });
+  //* Saving to cloudinary storage
+  await avatarManipulator(oldPath);
+  const fileData = await cloudinary.uploader.upload(oldPath, {
+    folder: "avatars",
+  });
+  const avatarURL = fileData.url;
+  await fs.unlink(oldPath);
+  const result = await User.findByIdAndUpdate(
+    userId,
+    { avatarURL },
+    { new: true }
+  );
+  res.json({ result });
 };
 
 module.exports = {

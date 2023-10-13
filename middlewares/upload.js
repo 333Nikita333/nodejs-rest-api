@@ -19,12 +19,12 @@ const limits = {
 
 const fileFilter = (_, file, cb) => {
   const { mimetype } = file;
-  if (mimetype !== "image/jpeg" || mimetype !== "image/png") {
-    cb(new HttpError(400, "File can have only .jpg or .png extension"), false);
+  if (mimetype === "image/jpeg" || mimetype === "image/png") {
+    cb(null, true);
+  } else {
+    cb(new HttpError(400, "File can have only .jpeg or .png extension"), false);
   }
-  cb(null, true);
 };
-
 const upload = multer({
   storage: multerConfig,
   limits,

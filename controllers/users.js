@@ -174,7 +174,8 @@ const updateSubscription = async (req, res) => {
 
 const updateAvatar = async (req, res) => {
   const { _id: userId } = req.user;
-  const { path: oldPath, originalname } = req.file;
+  const { path: avatarURL } = req.file;
+  // const { path: oldPath, originalname } = req.file;
 
   //* Saving to a local folder
   // const avatarsDir = path.join(__dirname, "../", "public", "avatars");
@@ -185,17 +186,31 @@ const updateAvatar = async (req, res) => {
   // const avatarURL = path.join("avatars", newFileName);
 
   //* Saving to cloudinary storage
-  await avatarManipulator(oldPath);
-  const fileData = await cloudinary.uploader.upload(oldPath, {
-    folder: "avatars",
-  });
-  const avatarURL = fileData.url;
-  await fs.unlink(oldPath);
+  // await avatarManipulator(oldPath);
+  // const fileData = await cloudinary.uploader.upload(oldPath, {
+  //   folder: "avatars",
+  // });
+  // const avatarURL = fileData.url;
+  // await fs.unlink(oldPath);
+  // const fileData = await cloudinary.uploader.upload(oldPath, {
+  //   folder: "avatars",
+  // });
+
+  //* Updated save method on cloudinary storage
+  if (!req.file) {
+    throw new HttpError(401, "Avatar file not found");
+  }
+
   const result = await User.findByIdAndUpdate(
     userId,
     { avatarURL },
     { new: true }
   );
+
+  if (!result) {
+    throw new HttpError(404, "Not found");
+  }
+
   res.json({ avatarURL });
 };
 

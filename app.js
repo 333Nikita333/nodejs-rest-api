@@ -1,13 +1,15 @@
 const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
-const session = require("express-session");
+
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 
-require("dotenv").config();
+const { passport } = require("./middlewares");
+const session = require("express-session");
 
-const passport = require("./middlewares/passport");
+require("dotenv").config();
+const { EXPRESS_SESSION_SECRET } = process.env;
 
 const usersRouter = require("./routes/api/users");
 const contactsRouter = require("./routes/api/contacts");
@@ -23,15 +25,15 @@ app.use(express.static("public"));
 
 app.use(
   session({
-    secret: "my-some-secret-key",
-    resave: false,
-    saveUninitialized: false,
+    secret: EXPRESS_SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true,
   })
 );
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/api/auth", authRouter);
+app.use("/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/contacts", contactsRouter);
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));

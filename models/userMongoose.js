@@ -34,7 +34,8 @@ const userSchema = new Schema(
     },
     verificationToken: {
       type: String,
-      required: [true, "Verify token is required"],
+      default: null,
+      // required: [true, "Verify token is required"], //! disabled for registration via google authorization
     },
   },
   { versionKey: false, timestamps: true }

@@ -70,6 +70,10 @@ const verifyEmail = async (req, res) => {
     throw new HttpError(400, "Verification has already been passed");
   }
 
+  if (!verificationToken || verificationToken !== user.verificationToken) {
+    throw new HttpError(400, "Verification token is invalid");
+  }
+
   await User.findByIdAndUpdate(user._id, {
     verify: true,
     verificationToken: null,

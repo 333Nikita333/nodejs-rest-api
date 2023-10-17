@@ -31,7 +31,6 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       try {
         const email = profile.emails[0].value;
-        console.log("profile =>", profile);
 
         let user = await User.findOne({ email });
         let token = "";
@@ -56,7 +55,7 @@ passport.use(
               ? profile.photos[0].value
               : gravatar.url(email);
 
-          const temporaryPassword = await bcrypt.genSalt(6);
+          const temporaryPassword = await bcrypt.genSalt(3);
           const payload = {
             id: profile.id,
           };

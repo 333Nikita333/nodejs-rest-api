@@ -5,10 +5,10 @@ Personal phone book backend based on MongoDB database that allows users to add, 
 <br>**Documentation link - [https://contacts-api-n3q6.onrender.com/api/docs](https://contacts-api-n3q6.onrender.com/api/docs)**
 ## API Endpoints
 ### Google Authentication
-- **GET /auth/google**
-  - Initiates Google authentication. Redirects the user to Google for authentication.
-- **GET /auth/google-redirect**
-  - Handles the redirect after successful Google authentication. Redirects to the specified success or failure URLs.
+<br>**@ GET /auth/google**
+<br>Initiates Google authentication. Redirects the user to Google for authentication.
+<br>**@ GET /auth/google-redirect**
+<br>Handles the redirect after successful Google authentication. Redirects to the specified success or failure URLs. Returns a user object with email and subscription, as well as a JWT token that is needed to authenticate on other endpoints.
   
 ### Routing for working with users
 <br>**@ POST /api/users/register**
@@ -49,22 +49,25 @@ Personal phone book backend based on MongoDB database that allows users to add, 
 - `npm run test` or `yarn test` &mdash; running Jest tests for registration and login
 
 ## Used Libraries
+- `express-session`: Middleware for managing user sessions.
 - `bcrypt`: Password hashing library.
 - `cloudinary`: Cloud image and video upload and manipulation service.
 - `cors`: Middleware for enabling Cross-Origin Resource Sharing.
 - `cross-env`: Environment variable setting utility.
 - `dotenv`: Environment variable management.
 - `express`: Web application framework for Node.js.
+- `gravatar`: Avatar image service based on user's email.
+- `jest`: JavaScript testing framework.
+- `jimp`: JavaScript image processing library.
 - `joi`: Object schema description language and validator for JavaScript objects.
 - `jsonwebtoken`: JSON Web Token (JWT) authentication library.
 - `mongoose`: MongoDB object modeling for Node.js.
 - `morgan`: HTTP request logger middleware.
-- `nanoid`: Unique ID generation library.
-- `gravatar`: Avatar image service based on user's email.
-- `jimp`: JavaScript image processing library.
 - `multer`: Middleware for handling file uploads.
+- `nanoid`: Unique ID generation library.
 - `nodemailer`: Send email from Node.js applications.
-- `jest`: JavaScript testing framework.
 - `nodemon`: Utility for auto-restarting Node.js applications during development.
 - `supertest`: HTTP assertions for API testing.
 - `swagger-ui-express`: Swagger UI for visualizing and interacting with API documentation.
+- `passport`: Authentication middleware.
+- `passport-google-oauth20`: Passport strategy for authenticating with Google using OAuth 2.0.

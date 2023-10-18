@@ -22,6 +22,10 @@
   ],
   "tags": [
     {
+      "name": "GoogleAuth",
+      "description": "Operations related to google authorization"
+    },
+    {
       "name": "Users",
       "description": "Operations related to users"
     },
@@ -31,6 +35,39 @@
     }
   ],
   "paths": {
+    "/auth/google": {
+      "get": {
+        "tags": ["Google Auth"],
+        "summary": "Initiates authentication via Google",
+        "description": "Used to start the authentication process through Google",
+        "responses": {
+          "200": {
+            "description": "Successfully initiated Google authentication"
+          }
+        }
+      }
+    },
+    "/auth/google-redirect": {
+      "get": {
+        "summary": "Handling redirects after authentication via Google",
+        "description": "Used to handle redirection after successful authentication via Google.",
+        "responses": {
+          "200": {
+            "description": "Successful authentication via Google",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleAuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed"
+          }
+        }
+      }
+    },
     "/api/users/register": {
       "post": {
         "tags": ["Users"],
@@ -545,6 +582,32 @@
   },
   "components": {
     "schemas": {
+      "GoogleAuthResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email",
+                "pattern": "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$",
+                "example": "john@example.com"
+              },
+              "subscription": {
+                "type": "string",
+                "description": "User's subscription",
+                "enum": ["starter", "pro", "business"],
+                "default": "starter"
+              }
+            }
+          }
+        }
+      },
       "RegisterUserRequest": {
         "type": "object",
         "properties": {
@@ -649,8 +712,7 @@
               }
             }
           }
-        },
-        "required": ["password", "email"]
+        }
       },
       "UserInfo": {
         "type": "object",

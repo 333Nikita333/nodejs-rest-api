@@ -49,6 +49,7 @@
     },
     "/auth/google-redirect": {
       "get": {
+        "tags": ["GoogleAuth"],
         "summary": "Handling redirects after authentication via Google",
         "description": "Used to handle redirection after successful authentication via Google.",
         "responses": {

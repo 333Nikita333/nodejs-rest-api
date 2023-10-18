@@ -4,6 +4,12 @@
 Personal phone book backend based on MongoDB database that allows users to add, edit, delete and view their contacts. The application implements user registration and authentication. Authorized users can add, edit, delete and view their contacts.
 <br>**Documentation link - [https://contacts-api-n3q6.onrender.com/api/docs](https://contacts-api-n3q6.onrender.com/api/docs)**
 ## API Endpoints
+### Google Authentication
+<br>**@ GET /auth/google**
+<br>Initiates Google authentication. Redirects the user to Google for authentication.
+<br>**@ GET /auth/google-redirect**
+<br>Handles the redirect after successful Google authentication. Redirects to the specified success or failure URLs. Returns a user object with email and subscription, as well as a JWT token that is needed to authenticate on other endpoints.
+  
 ### Routing for working with users
 <br>**@ POST /api/users/register**
 <br>User registration. Accepts an object with email, passwords and subscription fields. Returns a user object with email and subscription, or an error if such an email is already registered.
@@ -43,22 +49,25 @@ Personal phone book backend based on MongoDB database that allows users to add, 
 - `npm run test` or `yarn test` &mdash; running Jest tests for registration and login
 
 ## Used Libraries
-    "bcrypt": "^5.1.0",
-    "cloudinary": "^1.41.0",
-    "cors": "2.8.5",
-    "cross-env": "7.0.3",
-    "dotenv": "^16.0.3",
-    "express": "4.17.1",
-    "joi": "^17.9.2",
-    "jsonwebtoken": "^9.0.0",
-    "mongoose": "^7.1.0",
-    "morgan": "1.10.0",
-    "nanoid": "3.3.4"
-    "gravatar": "^1.8.2",
-    "jimp": "^0.22.8",
-    "multer": "^1.4.5-lts.1",
-    "nodemailer": "^6.9.2",
-    "jest": "^29.5.0",
-    "nodemon": "2.0.15",
-    "supertest": "^6.3.3",
-    "swagger-ui-express": "^5.0.0"
+- `express-session`: Middleware for managing user sessions.
+- `bcrypt`: Password hashing library.
+- `cloudinary`: Cloud image and video upload and manipulation service.
+- `cors`: Middleware for enabling Cross-Origin Resource Sharing.
+- `cross-env`: Environment variable setting utility.
+- `dotenv`: Environment variable management.
+- `express`: Web application framework for Node.js.
+- `gravatar`: Avatar image service based on user's email.
+- `jest`: JavaScript testing framework.
+- `jimp`: JavaScript image processing library.
+- `joi`: Object schema description language and validator for JavaScript objects.
+- `jsonwebtoken`: JSON Web Token (JWT) authentication library.
+- `mongoose`: MongoDB object modeling for Node.js.
+- `morgan`: HTTP request logger middleware.
+- `multer`: Middleware for handling file uploads.
+- `nanoid`: Unique ID generation library.
+- `nodemailer`: Send email from Node.js applications.
+- `nodemon`: Utility for auto-restarting Node.js applications during development.
+- `supertest`: HTTP assertions for API testing.
+- `swagger-ui-express`: Swagger UI for visualizing and interacting with API documentation.
+- `passport`: Authentication middleware.
+- `passport-google-oauth20`: Passport strategy for authenticating with Google using OAuth 2.0.

@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "1.0.0",
+    "version": "1.0.5",
     "title": "Phonebook Documentation",
     "description": "API for the contact book application with registration, login and contact management. The application implements the ability to verify the user's email after registration. Each registered user is automatically assigned a temporary avatar, which can later be replaced with your own. Users can choose one of three subscriptions: 'starter', 'pro' or 'business'. to confirm the mail.If the letter was not received, it is possible to resend it. \n\n<strong>Main functionality includes:</strong> \n\n- google authentication,\n\n- user registration with email verification,\n\n- user login and authentication,\n\n- user profile management,\n\n- creating, editing and deleting contacts,\n\n- viewing and filtering contacts,\n\n- setting and updating contact favorite status,\n\n- updating user subscription,\n\n- uploading and updating user avatar.\n\n<strong>Main technology stack:</strong>\n\nNode.js - a JavaScript runtime that allows you to run JavaScript code on the server.\n\n Express.js - minimalistic and flexible framework for developing web applications on Node.js.\n\n MongoDB - flexible and scalable NoSQL database.\n\n Mongoose - an object document model (ODM) for Node.js that provides an easy way to interact with the MongoDB database.",
     "contact": {

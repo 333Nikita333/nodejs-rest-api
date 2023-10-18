@@ -5,13 +5,13 @@ Personal phone book backend based on MongoDB database that allows users to add, 
 <br>**Documentation link - [https://contacts-api-n3q6.onrender.com/api/docs](https://contacts-api-n3q6.onrender.com/api/docs)**
 ## API Endpoints
 ### Google Authentication
-<br>**@ GET /auth/google**
+**@ GET /auth/google**
 <br>Initiates Google authentication. Redirects the user to Google for authentication.
 <br>**@ GET /auth/google-redirect**
 <br>Handles the redirect after successful Google authentication. Redirects to the specified success or failure URLs. Returns a user object with email and subscription, as well as a JWT token that is needed to authenticate on other endpoints.
   
 ### Routing for working with users
-<br>**@ POST /api/users/register**
+**@ POST /api/users/register**
 <br>User registration. Accepts an object with email, passwords and subscription fields. Returns a user object with email and subscription, or an error if such an email is already registered.
 <br>**@ GET /api/users/verify/:verificationToken**
 <br>User verification by the verificationToken parameter. Accepts a verificationToken as a search parameter. Confirms the registration and returns a successful verification message or an error if the user is not found or the verificationToken is invalid.
@@ -28,7 +28,7 @@ Personal phone book backend based on MongoDB database that allows users to add, 
 <br>**@ PATCH /api/users/avatars**
 <br>User avatar update. Accepts an object with a avatar file. Requires authorization using a JWT token in the Authorization header.
 ### Routing for working with a collection of contacts
-<br>**@ GET /api/contacts**
+**@ GET /api/contacts**
 <br>Get all contacts for a specific user. Requires authorization using a JWT token in the Authorization header.
 <br>**@ GET /api/contacts/:contactId**
 <br>Getting one contact by its id. Requires authorization using a JWT token in the Authorization header.
